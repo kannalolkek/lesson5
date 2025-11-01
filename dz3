@@ -1,0 +1,29 @@
+class Task:
+    def __init__(self, title, desc, deadline):
+        self.title = title
+        self.desc = desc
+        self.deadline = deadline
+        self.done = False
+
+    def __str__(self):
+        s = "зроблено" if self.done else "не зроблено"
+        return f"{s} {self.title} (до {self.deadline}) — {self.desc}"
+
+class TaskManager:
+    def __init__(self):
+        self.tasks = []
+
+    def add(self, t): self.tasks.append(t)
+    def remove(self, title): self.tasks = [t for t in self.tasks if t.title != title]
+    def done(self, title):
+        for t in self.tasks:
+            if t.title == title: t.done = True
+    def show(self):
+        for t in self.tasks: print(t)
+
+# Приклад використання
+tm = TaskManager()
+tm.add(Task("купити хліб", "магазин біля дому", "2025-11-01"))
+tm.add(Task("зробити домашку", "математика, сторінка 32", "2025-11-02"))
+tm.done("купити хліб")
+tm.show()
