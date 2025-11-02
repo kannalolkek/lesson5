@@ -21,7 +21,6 @@ class TaskManager:
     def show(self):
         for t in self.tasks: print(t)
 
-# Приклад використання
 tm = TaskManager()
 tm.add(Task("купити хліб", "магазин біля дому", "2025-11-01"))
 tm.add(Task("зробити домашку", "математика, сторінка 32", "2025-11-02"))
