@@ -1,0 +1,20 @@
+import colorama #встановлення бібліотеки
+dir(colorama)
+
+import colorama #імпорт та інтроспекція
+dir(colorama) 
+
+from colorama import init #ініціалізації бібліотеки
+init(autoreset=True) 
+
+from colorama import Cursor #керування курсором
+print(Cursor.UP(2))   
+print(Cursor.FORWARD(10)) 
+
+from colorama import Fore, Back, Style #класи-константи, кольори і формати
+
+print(Fore.RED + 'Червоний текст')
+print(Back.GREEN + 'Текст із зеленим фоном')
+print(Style.BRIGHT + 'Яскравий текст')
+print(Style.RESET_ALL + 'Повернення до стандарту')
+
