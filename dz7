@@ -1,0 +1,11 @@
+class InfinitePowersOfTwo:
+    def __init__(self):
+        self.exponent = 0
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        value = 2 ** self.exponent
+        self.exponent += 1
+        return value
