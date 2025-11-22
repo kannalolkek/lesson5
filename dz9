@@ -1,0 +1,42 @@
+import requests
+from bs4 import BeautifulSoup
+
+BASE_URL = "http://books.toscrape.com/"
+
+def get_soup(url):
+    r = requests.get(url)
+    r.raise_for_status()
+    return BeautifulSoup(r.text, "html.parser")
+
+def extract_titles_from_page(soup):
+    books = soup.select("article.product_pod h3 a")
+    return [b["title"] for b in books]
+
+def scrape_all_books():
+    titles = []
+    page_url = BASE_URL
+
+    while True:
+        soup = get_soup(page_url)
+        titles.extend(extract_titles_from_page(soup))
+
+        # шукаємо кнопку "next"
+        next_button = soup.select_one("li.next a")
+        if not next_button:
+            break
+
+        next_page = next_button["href"]
+        # формуємо коректний URL
+        if "catalogue" not in next_page:
+            page_url = BASE_URL + "catalogue/" + next_page
+        else:
+            page_url = BASE_URL + next_page
+
+    return titles
+
+if __name__ == "__main__":
+    all_titles = scrape_all_books()
+
+    print(f"Знайдено книг: {len(all_titles)}")
+    for t in all_titles:
+        print(t)
