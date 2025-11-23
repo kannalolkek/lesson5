@@ -1,0 +1,80 @@
+import requests
+from bs4 import BeautifulSoup
+import random
+import sqlite3
+
+def init_db():
+    conn = sqlite3.connect('scores.db')
+    cur = conn.cursor()
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS scores (
+            player TEXT PRIMARY KEY,
+            points INTEGER DEFAULT 0
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+
+def get_points(player):
+    conn = sqlite3.connect('scores.db')
+    cur = conn.cursor()
+    cur.execute('SELECT points FROM scores WHERE player = ?', (player,))
+    row = cur.fetchone()
+    conn.close()
+    return row[0] if row else 0
+
+
+def add_point(player):
+    conn = sqlite3.connect('scores.db')
+    cur = conn.cursor()
+
+    cur.execute(
+        'INSERT INTO scores (player, points) VALUES (?, 1) '
+        'ON CONFLICT(player) DO UPDATE SET points = points + 1',
+        (player,)
+    )
+
+    conn.commit()
+    conn.close()
+
+def get_soup(url):
+    r = requests.get(url)
+    r.raise_for_status()
+    return BeautifulSoup(r.text, 'html.parser')
+
+def get_random_book():
+    url = 'https://books.toscrape.com/'
+    soup = get_soup(url)
+
+    books = soup.select('article.product_pod h3 a')
+
+    book = random.choice(books)
+
+    title = book['title']
+    return title
+
+def play_game():
+    print('гра: вгадай книгу з сайту')
+    print('я виберу книгу. спробуй вгадати її назву')
+
+    secret_title = get_random_book()
+
+    hint = secret_title[0]
+    length = len(secret_title)
+
+    print(f'підказка: назва має {length} символів.')
+    print(f'починається з букви: {hint}')
+
+    while True:
+        guess = input('\nвведи свою відповідь: ')
+
+        if guess.lower().strip() == secret_title.lower().strip():
+            print('\n вірно ти вгадав книгу')
+            print(f'назва: {secret_title}')
+            break
+        else:
+            print('неправильно спробуй ще раз')
+
+if __name__ == "__main__":
+    play_game()
