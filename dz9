@@ -20,13 +20,12 @@ def scrape_all_books():
         soup = get_soup(page_url)
         titles.extend(extract_titles_from_page(soup))
 
-        # шукаємо кнопку "next"
         next_button = soup.select_one("li.next a")
         if not next_button:
             break
 
         next_page = next_button["href"]
-        # формуємо коректний URL
+
         if "catalogue" not in next_page:
             page_url = BASE_URL + "catalogue/" + next_page
         else:
